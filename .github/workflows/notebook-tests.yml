@@ -15,17 +15,17 @@ jobs:
         run: echo "$DOTENV_FILE" > .env
         env:
           DOTENV_FILE: ${{ secrets.DOTENV_FILE }}
+      - name: Add tools to PATH
+        run: |
+          echo "/home/vscode/.local/bin" >> $GITHUB_PATH
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - name: Install dependencies (post-create command)
         run: uv sync
-        env:
-          PATH: /home/vscode/.local/bin:$PATH
       - name: Run env check notebook
         run: jupyter nbconvert --to notebook --execute notebooks/0_check_env_vars.ipynb --output /dev/null
         env:
-          PATH: .venv/bin:/home/vscode/.local/bin:$PATH
           OPENAI_AGENTS_DISABLE_TRACING: "1"
       - name: Run RAG notebook
         run: jupyter nbconvert --to notebook --execute notebooks/4_rag.ipynb --output /dev/null
         env:
-          PATH: .venv/bin:/home/vscode/.local/bin:$PATH
           OPENAI_AGENTS_DISABLE_TRACING: "1"
